@@ -10,6 +10,12 @@ class ProductCreate(BaseModel):
     stock: int
     comment:list[str] = []
 
+class ProductUpdate(BaseModel):
+    name: str|None=None
+    price : float |None=None
+    stock:int|None = None
+    comments:list[str] |None = None
+
 @app.post("/product")
 def create_product(product: ProductCreate):
     new_product = product.model_dump()
@@ -25,5 +31,14 @@ def list_products():
 def get_product(product_id:int):
     for item in product_db:
         if item["id"] == product_id:
+            return item
+    raise HTTPException(status_code=404 , detail="Product is not available")
+
+@app.patch("/products/{product_id}")
+def update_product(product_id:id , updates:ProductUpdate):
+    for item in product_db:
+        if item["id"] == product_id:
+            updated_fields = updates.model_dump(exclude_unset=True)
+            item.update(updated_fields)
             return item
     raise HTTPException(status_code=404 , detail="Product is not available")
