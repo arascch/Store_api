@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI , HTTPException
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -26,4 +26,4 @@ def get_product(product_id:int):
     for item in product_db:
         if item["id"] == product_id:
             return item
-        
+    raise HTTPException(status_code=404 , detail="Product is not available")
